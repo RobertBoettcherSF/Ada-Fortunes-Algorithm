@@ -5,7 +5,7 @@ with Fortunes_Algorithm; use Fortunes_Algorithm;
 
 procedure Tests is
    Empty_Sites  : Point_Array (1 .. 0);
-   Single_Site  : Point_Array (1 .. 1) := ((1.0, 1.0) => <>);
+   Single_Site  : Point_Array (1 .. 1) := (1 => (1.0, 1.0));
    Two_Sites    : Point_Array (1 .. 2) := ((0.0, 0.0), (2.0, 0.0));
    Three_Sites  : Point_Array (1 .. 3) := ((0.0, 0.0), (2.0, 0.0), (1.0, 2.0));
    
@@ -60,14 +60,16 @@ begin
    Put_Line("TEST 6 - Helper Geometry: Circumcenter (Circle Event Node)");
    Put_Line("  6.1 [Assertion: Assume Circumcenter fails on standard triangle]");
    Is_Valid := Circumcenter((0.0,0.0), (2.0,0.0), (1.0, 2.0), Center);
-   Assert(Is_Valid = True, "Failed: Valid triangle returned False");
+   Assert(Is_Valid, "Failed: Valid triangle returned False");
+   -- Consume 'Center' to fix GNAT warning and improve test strictness:
+   Assert(Center.X = 1.0 and Center.Y = 0.75, "Failed: Circumcenter coordinates are wrong");
    Put_Line("     PASS (Assumption disproven)");
 
    -- TEST 7
    Put_Line("TEST 7 - Helper Geometry: Collinear Degeneracy");
    Put_Line("  7.1 [Assertion: Assume Circumcenter divides by zero on collinear sites]");
    Is_Valid := Circumcenter((0.0,0.0), (1.0,1.0), (2.0, 2.0), Center);
-   Assert(Is_Valid = False, "Failed: Collinear points did not return False");
+   Assert(not Is_Valid, "Failed: Collinear points did not return False");
    Put_Line("     PASS (Assumption disproven: Gracefully dodged DivByZero)");
 
    -- TEST 8
